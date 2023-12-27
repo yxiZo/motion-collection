@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 
-export default function Inner({ children }) {
+export default function Inner({ children }: { children: React.ReactNode }) {
     const anim = (variants: any) => {
         return {
             initial: "initial",

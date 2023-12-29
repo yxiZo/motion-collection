@@ -14,17 +14,19 @@ import {
 import {useEffect, useState} from "react";
 import * as localforage from "localforage";
 
+type MotionType = "Inner" | "Stairs" | "Curve";
 
 const components = {
     Stairs: Stairs,
     Inner: Inner,
     Curve: Curve
 };
+
 export default function MotionLayout({children}: { children: React.ReactNode }) {
-    const [motionType, setMotionType] = useState("")
+    const [motionType, setMotionType] = useState<MotionType>("Stairs")
     const Component = components[motionType] ?? Inner;
     useEffect(() => {
-        localforage.getItem("motionType_local").then(function (value) {
+        localforage.getItem("motionType_local").then((value: any) => {
             setMotionType(value)
         })
     }, [])
@@ -34,7 +36,7 @@ export default function MotionLayout({children}: { children: React.ReactNode }) 
 
             <Component>
                 <div className={"mb-8"} key={"111"}>
-                    <Select value={motionType} onValueChange={(v) => localforage.setItem('motionType_local', v).then(function () {
+                    <Select value={motionType} onValueChange={(v: MotionType) => localforage.setItem('motionType_local', v).then(function () {
                         setMotionType(v)
                         return localforage.getItem('key');
                     })}>

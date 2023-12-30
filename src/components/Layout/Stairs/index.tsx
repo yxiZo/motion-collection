@@ -73,7 +73,7 @@ export default function Inner({ children }: { children: React.ReactNode }) {
         <div className={"transition-container fixed w-screen h-screen top-0 flex pointer-events-none"}>
             {
                 [...Array(nbOfStairs)].map((_, i) => {
-                    // 根据传递的下标 可以调整动画从左导游 还是从右到左
+                    // 根据传递的下标 可以调整动画从左到右 还是从右到左
                     return <motion.div {...anim(expand, nbOfStairs - i)} key={i} className={"relative bg-black h-full grow"}></motion.div>
                 })
             }

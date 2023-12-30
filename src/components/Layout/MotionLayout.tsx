@@ -32,8 +32,6 @@ export default function MotionLayout({children}: { children: React.ReactNode }) 
     }, [])
     return (
         <>
-
-
             <Component>
                 <div className={"mb-8"} key={"111"}>
                     <Select value={motionType} onValueChange={(v: MotionType) => localforage.setItem('motionType_local', v).then(function () {

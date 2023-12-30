@@ -9,6 +9,9 @@ export default function Inner({ children }: { children: React.ReactNode }) {
             variants
         }
     }
+    /**
+     * 文字的透明度动画
+     */
     const opacity = {
             initial: {
                 opacity: 0
@@ -24,6 +27,9 @@ export default function Inner({ children }: { children: React.ReactNode }) {
             }
     }
 
+    /**
+     * slide 层 的定位  初始
+     */
     const slide = {
         initial: {
             top: "100vh",
@@ -39,6 +45,9 @@ export default function Inner({ children }: { children: React.ReactNode }) {
             }
         }
     }
+    /**
+     * 透视层
+     */
      const perspective = {
             initial: {
                 scale: 1,

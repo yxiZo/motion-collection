@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Card(props: any) {
     return (
-        <Link className="xl:w-1/4 md:w-1/2 p-4" href={"/Motion/RouterMotion"}>
+        <Link className="xl:w-1/4 md:w-1/2 p-4" href={props.to}>
             <div>
                 <div className="bg-gray-100 p-6 rounded-lg">
                     <img className="h-40 rounded w-full object-cover object-center mb-6"

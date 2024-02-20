@@ -1,9 +1,10 @@
 import Image from 'next/image'
 import Card from "@/components/Card";
 
+
+
 export default function Home() {
   return (
-
         <div className="container px-5 py-24 mx-auto">
           <div className="flex flex-wrap w-full mb-20">
             <div className="lg:w-1/2 w-full mb-6 lg:mb-0">
@@ -14,8 +15,8 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap -m-4">
             {
-              [1, 2, 3, 4, 5].map((item, index) => (
-                  <Card key={index} />
+              [{href: "/Motion/RouterMotion"}, { href:"/Motion/SmoothScroll" }].map((item, index) => (
+                  <Card key={index} to={item?.href ?? "/"}/>
               ))
             }
           </div>

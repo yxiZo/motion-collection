@@ -1,0 +1,25 @@
+{
+  "galley": [
+    {
+      "thumbnail": "https://dummyimage.com/720x400",
+      "tag": ["framer-motion"],
+      "description": "创意页面的过渡效果, 经过分析",
+      "link": "/Motion/RouterMotion",
+      "title": "页面过渡效果(不支持 ssr)"
+    },
+    {
+      "thumbnail": "https://dummyimage.com/720x400",
+      "tag": ["虚拟滚动"],
+      "description": "这是一个示例描述。",
+      "link": "/Motion/SmoothScroll",
+      "title": "丝滑滚动实现"
+    },
+    {
+        "thumbnail": "https://dummyimage.com/720x400",
+        "tag": ["虚拟滚动"],
+        "description": "这是一个示例描述。",
+        "link": "/Motion/SmoothScroll",
+        "title": "svg 曲线动画"
+    }
+  ]
+}

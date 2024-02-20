@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Card from "@/components/Card";
-
+import HomeConfig from "../../public/home.json"
 
 
 export default function Home() {
@@ -15,8 +15,8 @@ export default function Home() {
           </div>
           <div className="flex flex-wrap -m-4">
             {
-              [{href: "/Motion/RouterMotion"}, { href:"/Motion/SmoothScroll" }].map((item, index) => (
-                  <Card key={index} to={item?.href ?? "/"}/>
+              HomeConfig.galley.map((item, index) => (
+                  <Card key={index} config={item} to={item?.link ?? "/"}/>
               ))
             }
           </div>

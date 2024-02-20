@@ -28,8 +28,8 @@ export default function Card(props: {
                         src={config.thumbnail} alt="content" />
                     <div className="mb-5">
                         {
-                            config.tag.map((tag) => {
-                                return <div className="badge badge-primary text-grey ">{tag}</div>
+                            config.tag.map((tag, index) => {
+                                return <div key={index} className="badge badge-primary text-grey ">{tag}</div>
                             })
                         }
 

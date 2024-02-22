@@ -6,7 +6,7 @@ const Upload = () => {
         // @ts-ignore
         data.set('avatar', uploadref?.current?.files?.[0]);
 
-        const res = await fetch('http://localhost:3000/api/upload', {
+        const res = await fetch(`${window.location.origin}/api/upload`, {
             method: "POST",
             mode: "cors",
             body: data

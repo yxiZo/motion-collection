@@ -1,0 +1,246 @@
+---
+title: API 开放平台四-网关
+categories: 
+- API 开放平台
+tags: 
+- 星球项目
+---
+
+# 四、网关
+
+1. 开发接口调用次数的设计
+2. 优化整个系统的架构（API 网关）
+   1. 网关是什么？
+   2. 网关的作用
+   3. 网关的应用场景及实现
+   4. 结合业务应用网关
+
+## 接口调用次数统计
+
+需求：
+
+1. **用户每次调用接口成功，次数 + 1**
+2. 给用户分配或者用户自主申请接口调用次数
+
+业务流程：
+
+1. 用户调用接口
+2. 修改数据库，调用次数 + 1
+
+设计库表：
+
+哪个用户？哪个接口？
+
+用户 => 接口 （多对多关系）
+
+用户调用接口关系表：
+
+```sql
+-- 用户调用接口关系表
+create table if not exists user_interface_info
+(
+    id            bigint auto_increment comment 'id' primary key,
+    userId        bigint  comment '调用用户 id',
+    interfaceInfoId        bigint  comment '接口 id',
+    totalNum       int     default 0 comment '总调用次数',
+    leftNum       int     default 0 comment '剩余调用次数',
+    status       int     default 0 comment '0-正常， 1-禁用',
+    createTime    datetime default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime    datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete      tinyint  default 0                 not null comment '是否删除'
+) comment '用户调用接口关系表';
+```
+
+步骤：
+
+1. 开发基本的增删改查（给管理员用）
+2. 开发用户调用接口次数 + 1 的功能（service）
+
+问题：
+
+如果每个接口的方法都写调用次数 + 1， 过于麻烦
+
+致命问题：接口开发者需要自己去添加统计代码
+
+![image-20221204192719518](C:\Users\ASUS\AppData\Roaming\Typora\typora-user-images\image-20221204192719518.png)
+
+使用 AOP 切面的优点：独立于接口，在每个接口调用后次数 + 1
+
+AOP 切面的缺点：只存在单个项目中，如果每个团队都要开发自己的模拟接口，那么都要写一个切面
+
+## 网关
+
+### 网关的作用
+
+1. 路由
+2. 负载均衡
+3. 统一鉴权
+4. 跨域
+5. 统一业务处理（缓存）
+6. 访问控制
+7. 发布控制
+8. 流量染色
+9. 接口保护
+   1. 限制请求
+   2. 信息脱敏
+   3. 降级（熔断）
+   4. 限流：学习令牌桶算法、学习漏桶算法，学习一下 RedisLimitHandler
+   5. 超时时间
+10. 统一日志
+11. 统一文档
+
+### 路由
+
+起到转发的作用，比如有接口 A 和接口 B， 网关会记录这些信息，根据用户访问的地址和参数，转发请求到对应的接口（服务器/集群）
+
+/a => 接口 A
+
+/b => 接口 B
+
+Gateway 路由：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories
+
+### 负载均衡
+
+在路由的基础上
+
+/c => 服务 A / 集群 A （随机转发到其中的某一个机器）
+
+uri 从固定地址改成 lb:xxxx
+
+### 统一处理跨域
+
+网关统一处理跨域，不用在每个项目里单独处理
+
+GateWay 处理跨域：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#cors-configuration
+
+### 发布控制
+
+灰度发布，比如上线新接口，先给新接口分配 20% 的流量，老接口 80%， 再慢慢调整比例
+
+https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-weight-route-predicate-factory
+
+### 流量染色
+
+给请求（流量）添加一些标识，一般是设置请求头中，添加新的请求头
+
+https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-addrequestheader-gatewayfilter-factory
+
+全局染色：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#default-filters
+
+### 统一接口保护
+
+1. 限制请求：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#requestheadersize-gatewayfilter-factory
+2. 信息脱敏：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-removerequestheader-gatewayfilter-factory
+3. 降级（熔断）：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#fallback-headers
+4. 限流：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-requestratelimiter-gatewayfilter-factory
+5. 超时时间：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#http-timeouts-configuration
+6. 重试（业务保护）：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#the-retry-gatewayfilter-factory
+
+### 统一业务处理
+
+把每个项目中都要做的通用逻辑放到上层（网关），统一处理，比如本项目的次数统计
+
+### 统一鉴权
+
+判断用户是否有权限进行操作，无论访问什么接口，都统一验证权限，避免重复写验证权限操作。
+
+### 访问控制
+
+黑白名单，比如限制 DDOS IP
+
+### 统一日志
+
+统一的请求、响应信息记录
+
+### 统一文档
+
+将下游项目的文档进行聚合，在一个页面统一查看
+
+可以使用 knife4j : https://doc.xiaominfo.com/docs/middleware-sources/aggregation-introduction
+
+## 网关的分类
+
+1. 全局网关（接入层网关）： 作用是负载均衡、请求日志等，不和业务逻辑绑定
+2. 业务网关（微服务网关）： 存在一些业务逻辑，作用是将请求转发到不同的业务/项目/接口/服务
+
+参考文章：https://blog.csdn.net/qq_21040559/article/details/122961395
+
+## 实现网关
+
+1. Nginx （全局网关）、Kong 网关 （API 网关， Kong: https://github.com/Kong/kong), 编程成本相对高点
+2. Spring Cloud GateWay (取代了 Zuul ) , 性能高、可以用 Java 代码来写逻辑，适合学习
+
+网关的技术选型：https://zhuanlan.zhihu.com/p/500587132
+
+## Spring Cloud GateWay 用法
+
+官网：https://spring.io/projects/spring-cloud-gateway/
+
+官方文档：https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/
+
+### 核心概念
+
+路由（根据什么条件，转发到哪里去）
+
+断言：一组规则、条件， 用来确定如何转发路由
+
+过滤器： 对请求进行一系列的处理， 比如添加请求头、添加请求参数
+
+请求流程：
+
+1. 客户端发起请求
+2. Handler Mapping: 根据断言，将请求转发到对应的路由
+3. Web Handler： 处理请求（一层层经过过滤器）
+4. 实际调用服务
+
+![image-20221204202459676](C:\Users\ASUS\AppData\Roaming\Typora\typora-user-images\image-20221204202459676.png)
+
+### 两种配置方式
+
+1. 配置式（方便、规范）
+   1. 简化版
+   2. 全称版
+2. 编程式（灵活、相对麻烦）
+
+### 开启日志
+
+```yml
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: trace
+```
+
+### 断言
+
+1. After 在 xx 时间之后
+2. Before 在 xx 时间之前
+3. Between 在 xx 时间之间
+4. 请求类别
+5. 请求头（包含 cookie）
+6. 查询参数
+7. 客户端地址
+8. **权重**
+
+### 过滤器
+
+基本功能：对请求头、请求参数、响应头的增删改查
+
+1. 添加请求头
+2. 添加请求参数
+3. 添加响应头
+4. 降级
+5. 限流
+6. 重试
+
+引入：
+
+```java
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+</dependency>
+```
+

@@ -20,6 +20,27 @@
         "description": "这是一个示例描述。",
         "link": "/Motion/SmoothScroll",
         "title": "svg 曲线动画"
+    },
+    {
+        "thumbnail": "https://dummyimage.com/720x400",
+        "tag": [""],
+        "description": "曲线效果",
+        "link": "/Motion/SmoothScroll",
+        "title": "遮罩 mask 实现的效果"
+    },
+    {
+        "thumbnail": "https://dummyimage.com/720x400",
+        "tag": ["功能组件"],
+        "description": "上传文件",
+        "link": "/Upload",
+        "title": "大文件分片上传"
+    },
+    {
+        "thumbnail": "https://dummyimage.com/720x400",
+        "tag": ["功能组件"],
+        "description": "注册登录",
+        "link": "/Upload",
+        "title": "常用登录组件"
     }
   ]
 }

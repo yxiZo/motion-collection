@@ -5,7 +5,7 @@ import HomeConfig from "../../public/home.json"
 
 export default function Home() {
   return (
-        <div className="container px-5 py-24 mx-auto">
+        <div className="container  min-h-screen px-5 py-24 mx-auto">
           <div className="flex flex-wrap w-full mb-20">
             <div className="lg:w-1/2 w-full mb-6 lg:mb-0">
               <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">前端效果展示</h1>

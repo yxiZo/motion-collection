@@ -29,7 +29,7 @@ export default function Card(props: {
                     <div className="mb-5">
                         {
                             config.tag.map((tag, index) => {
-                                return <div key={index} className="badge badge-primary text-grey ">{tag}</div>
+                                return <div key={index} className="badge badge-primary  bg-[#3a7af0] p-4 text-white ">{tag}</div>
                             })
                         }
 

@@ -1,10 +1,10 @@
 import { useRef } from "react"
-export default () => {
+const Upload = () => {
     const uploadref = useRef(null)
     async function formData() {
         const data = new FormData();
-        debugger
-        data.set('aaa', uploadref?.current?.files?.[0]);
+        // @ts-ignore
+        data.set('avatar', uploadref?.current?.files?.[0]);
 
         const res = await fetch('http://localhost:3000/api/upload', {
             method: "POST",
@@ -22,3 +22,4 @@ export default () => {
 
     </div>
 }
+export default Upload
